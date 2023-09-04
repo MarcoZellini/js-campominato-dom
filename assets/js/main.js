@@ -16,17 +16,23 @@
     difficoltà 1 ⇒ 100 caselle, con un numero compreso tra 1 e 100, divise in 10 caselle per 10 righe;
     difficoltà 2 ⇒ 81 caselle, con un numero compreso tra 1 e 81, divise in 9 caselle per 9 righe;
     difficoltà 3 ⇒ 49 caselle, con un numero compreso tra 1 e 49, divise in 7 caselle per 7 righe;
+
+    TODO: 
+    - Colorare di rosso se calpesta la bomba - fatto
+    - colorare azzurro se non calpesta la bomba - fatto
+    - Definire la fine del gioco e mostrare il punteggio
 */
 
 //Definisco gli elementi di cui ho bisogno
 const fieldElement = document.querySelector('.field');
 const row = 10;
 const column = 10;
+const bombNumber = 16;
 
 //Al click del bottone richiamo la funzione genereateField()
 document.querySelector('button').addEventListener('click', function () {
     fieldElement.innerHTML = '';
-    const bombIndexList = bombGenerator(16);
+    const bombIndexList = bombGenerator(bombNumber);
     console.log(bombIndexList);
     generateField(fieldElement, row, column, bombIndexList);
 });
@@ -40,26 +46,40 @@ document.querySelector('button').addEventListener('click', function () {
  * @param {number} column Field's columns number
  */
 function generateField(elementDOM, row, column, bombIndexList) {
+    let gameOver = false;
+    const resultElement = document.querySelector('.result');
+    let punteggio = 0;
+
+    resultElement.innerHTML = '';
 
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < column; j++) {
             const cellElement = document.createElement('div');
             cellElement.classList.add('cell');
-            cellElement.append(((i*10) + (j + 1)));
+            cellElement.append(((i * 10) + (j + 1)));
 
             cellElement.addEventListener('click', function () {
 
-                console.log('Hai cliccato la cella numero: ' + ((i*10) + (j + 1))); 
-
-                if (bombIndexList.includes(((i*10) + (j + 1)))) {
-                    console.log('Ho colpito la bomba');
-                    this.classList.add('bg_red');
-
+                if (bombIndexList.includes(((i * 10) + (j + 1)))) {
+                    if (!gameOver) {
+                        this.classList.add('bg_red');
+                        gameOver = true;
+                        gameOverElement = document.createElement('h1');
+                        gameOverElement.append('GAME OVER');
+                        resultElement.append(gameOverElement);
+                        resultElement.append('Hai totalizzato ' + punteggio + ' punti!');
+                        console.log('BOMBA!!');
+                    }
                 } else {
-                    console.log('Non ho colpito la bomba');
-                    this.classList.add('bg_lightblue');
+                    if (!this.classList.contains('bg_lightblue') && !gameOver) {
+                        this.classList.add('bg_lightblue');
+                        punteggio++;
+                        if (punteggio === 96) {
+                            gameOver = true;
+                        }
+                    }
                 }
-            })
+            });
 
             elementDOM.append(cellElement);
         }
