@@ -53,7 +53,7 @@ button {
 }
 
 .cell {
-    width: calc(100%/10);
+    /* width: calc(100%/10); */
     aspect-ratio: 1 / 1;
     border: 1px solid white;
     display: flex;
@@ -77,4 +77,8 @@ button {
 
 .color_lightblue {
     color: rgb(0, 191, 255);
+}
+
+select, option { 
+    color: black
 }

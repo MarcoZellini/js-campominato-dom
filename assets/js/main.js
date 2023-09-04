@@ -22,16 +22,32 @@
 
 //Definisco gli elementi di cui ho bisogno
 const fieldElement = document.querySelector('.field');
-const row = 10;
-const column = 10;
 const bombNumber = 16;
+let cellNumber;
+let level;
 
 //Al click del bottone richiamo la funzione genereateField()
 document.querySelector('button').addEventListener('click', function () {
     fieldElement.innerHTML = '';
+    level = Number(document.querySelector('#levels').value);
+    console.log(level);
+    switch (level) {
+        case 1:
+            cellNumber = 100;
+            break;
+        case 2:
+            cellNumber = 81;
+            break;
+        case 3:
+            cellNumber = 49;
+            break;
+    }
+
     const bombIndexList = bombGenerator(bombNumber);
     console.log(bombIndexList);
-    generateField(fieldElement, row, column, bombIndexList);
+
+
+    generateField(fieldElement, cellNumber, bombIndexList);
 });
 
 
@@ -39,10 +55,9 @@ document.querySelector('button').addEventListener('click', function () {
  * ### generateField
  * > Function that creates a table of squares. If you click a square its background become lightblue.
  * @param {object} elementDOM Element where i am creating the field
- * @param {number} row Field's rows number
- * @param {number} column Field's columns number
+ * @param {number} cellNumber Field's cell number
  */
-function generateField(elementDOM, row, column, bombIndexList) {
+function generateField(elementDOM, cellNumber, bombIndexList) {
     let gameOver = false;
     const resultElement = document.querySelector('.result');
     let punteggio = 0;
@@ -50,41 +65,40 @@ function generateField(elementDOM, row, column, bombIndexList) {
     resultElement.innerHTML = '';
     gameOverElement.innerHTML = '';
     resultElement.append(gameOverElement);
-    // console.log('punteggio max: ' + ((row * column) - bombIndexList.length));
+    // console.log('punteggio max: ' + (cellNumber - bombIndexList.length));
 
-    for (let i = 0; i < row; i++) {
-        for (let j = 0; j < column; j++) {
-            const cellElement = document.createElement('div');
-            cellElement.classList.add('cell');
-            cellElement.append(((i * 10) + (j + 1)));
+    for (let i = 0; i < cellNumber; i++) {
+        const cellElement = document.createElement('div');
+        cellElement.classList.add('cell');
+        cellElement.style.width = `calc(100% / ${Math.sqrt(cellNumber)})`;
+        cellElement.append(i + 1);
 
-            cellElement.addEventListener('click', function () {
+        cellElement.addEventListener('click', function () {
 
-                if (bombIndexList.includes(((i * 10) + (j + 1)))) {
-                    if (!gameOver) {
-                        this.classList.add('bg_red');
+            if (bombIndexList.includes(i+1)) {
+                if (!gameOver) {
+                    this.classList.add('bg_red');
+                    gameOver = true;
+                    gameOverElement.append('GAME OVER');
+                    gameOverElement.classList.add('color_red');
+                    resultElement.append('Hai totalizzato ' + punteggio + ' punti!');
+                    console.log('BOMBA!!');
+                }
+            } else {
+                if (!this.classList.contains('bg_lightblue') && !gameOver) {
+                    this.classList.add('bg_lightblue');
+                    punteggio++;
+                    if (punteggio === (cellNumber - bombIndexList.length)) {
                         gameOver = true;
-                        gameOverElement.append('GAME OVER');
-                        gameOverElement.classList.add('color_red');
+                        gameOverElement.append('HAI VINTO!');
+                        gameOverElement.classList.add('color_lightblue');
                         resultElement.append('Hai totalizzato ' + punteggio + ' punti!');
-                        console.log('BOMBA!!');
-                    }
-                } else {
-                    if (!this.classList.contains('bg_lightblue') && !gameOver) {
-                        this.classList.add('bg_lightblue');
-                        punteggio++;
-                        if (punteggio === ((row * column) - bombIndexList.length)) {
-                            gameOver = true;
-                            gameOverElement.append('HAI VINTO!');
-                            gameOverElement.classList.add('color_lightblue');
-                            resultElement.append('Hai totalizzato ' + punteggio + ' punti!');
-                        }
                     }
                 }
-            });
+            }
+        });
 
-            elementDOM.append(cellElement);
-        }
+        elementDOM.append(cellElement);
     }
 }
 
@@ -101,9 +115,8 @@ function bombGenerator(nBomb) {
     let randomNumber;
     let i = 0;
 
-
     while (i < nBomb) {
-        randomNumber = Math.ceil(Math.random() * 100);
+        randomNumber = Math.ceil(Math.random() * cellNumber);
         if (!bombIndexList.includes(randomNumber)) {
             bombIndexList[i] = randomNumber;
             i++;
