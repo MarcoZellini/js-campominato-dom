@@ -29,10 +29,6 @@ body {
 
 }
 
-.result > h1 {
-    color: red;
-}
-
 h1 {
     text-align: center;
     font-size: 3rem;
@@ -73,4 +69,12 @@ button {
 
 .bg_red {
     background-color: red;
+}
+
+.color_red {
+    color: red;
+}
+
+.color_lightblue {
+    color: rgb(0, 191, 255);
 }

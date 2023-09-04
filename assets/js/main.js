@@ -17,10 +17,7 @@
     difficoltà 2 ⇒ 81 caselle, con un numero compreso tra 1 e 81, divise in 9 caselle per 9 righe;
     difficoltà 3 ⇒ 49 caselle, con un numero compreso tra 1 e 49, divise in 7 caselle per 7 righe;
 
-    TODO: 
-    - Colorare di rosso se calpesta la bomba - fatto
-    - colorare azzurro se non calpesta la bomba - fatto
-    - Definire la fine del gioco e mostrare il punteggio
+    TODO:
 */
 
 //Definisco gli elementi di cui ho bisogno
@@ -49,8 +46,11 @@ function generateField(elementDOM, row, column, bombIndexList) {
     let gameOver = false;
     const resultElement = document.querySelector('.result');
     let punteggio = 0;
-
+    const gameOverElement = document.createElement('h1');
     resultElement.innerHTML = '';
+    gameOverElement.innerHTML = '';
+    resultElement.append(gameOverElement);
+    // console.log('punteggio max: ' + ((row * column) - bombIndexList.length));
 
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < column; j++) {
@@ -64,9 +64,8 @@ function generateField(elementDOM, row, column, bombIndexList) {
                     if (!gameOver) {
                         this.classList.add('bg_red');
                         gameOver = true;
-                        gameOverElement = document.createElement('h1');
                         gameOverElement.append('GAME OVER');
-                        resultElement.append(gameOverElement);
+                        gameOverElement.classList.add('color_red');
                         resultElement.append('Hai totalizzato ' + punteggio + ' punti!');
                         console.log('BOMBA!!');
                     }
@@ -74,8 +73,11 @@ function generateField(elementDOM, row, column, bombIndexList) {
                     if (!this.classList.contains('bg_lightblue') && !gameOver) {
                         this.classList.add('bg_lightblue');
                         punteggio++;
-                        if (punteggio === 96) {
+                        if (punteggio === ((row * column) - bombIndexList.length)) {
                             gameOver = true;
+                            gameOverElement.append('HAI VINTO!');
+                            gameOverElement.classList.add('color_lightblue');
+                            resultElement.append('Hai totalizzato ' + punteggio + ' punti!');
                         }
                     }
                 }
