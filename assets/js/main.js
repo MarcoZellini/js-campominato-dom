@@ -55,3 +55,29 @@ function generateField(elementDOM, row, column) {
         }
     }
 }
+
+/**
+ * ###bombGenerator
+ * > This function generate a x number of indexes that determine the bombs position.
+ * > A number can't be generated more than once.
+ * @param {number} nBomb number of bomb generated
+ * @returns {number[]} Array of indexes
+ */
+function bombGenerator(nBomb) {
+
+    const bombIndex = [];
+    let randomNumber;
+    // console.log(!bombIndex.includes(randomNumber));
+    let i = 0;
+    while (i < nBomb) {
+        randomNumber = Math.ceil(Math.random() * 100);
+        if (!bombIndex.includes(randomNumber)) {
+            bombIndex[i] = randomNumber;
+            i++;
+        }
+    }
+
+    return bombIndex;
+}
+
+bombGenerator(16);
