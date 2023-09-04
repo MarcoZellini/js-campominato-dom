@@ -16,8 +16,7 @@
     difficoltà 1 ⇒ 100 caselle, con un numero compreso tra 1 e 100, divise in 10 caselle per 10 righe;
     difficoltà 2 ⇒ 81 caselle, con un numero compreso tra 1 e 81, divise in 9 caselle per 9 righe;
     difficoltà 3 ⇒ 49 caselle, con un numero compreso tra 1 e 49, divise in 7 caselle per 7 righe;
-
-    */
+*/
 
 //Definisco gli elementi di cui ho bisogno
 const fieldElement = document.querySelector('.field');
@@ -27,7 +26,9 @@ const column = 10;
 //Al click del bottone richiamo la funzione genereateField()
 document.querySelector('button').addEventListener('click', function () {
     fieldElement.innerHTML = '';
-    generateField(fieldElement, row, column);
+    const bombIndexList = bombGenerator(16);
+    console.log(bombIndexList);
+    generateField(fieldElement, row, column, bombIndexList);
 });
 
 
@@ -38,17 +39,26 @@ document.querySelector('button').addEventListener('click', function () {
  * @param {number} row Field's rows number
  * @param {number} column Field's columns number
  */
-function generateField(elementDOM, row, column) {
+function generateField(elementDOM, row, column, bombIndexList) {
 
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < column; j++) {
             const cellElement = document.createElement('div');
             cellElement.classList.add('cell');
-            cellElement.append((i + 1) * (j + 1));
+            cellElement.append(((i*10) + (j + 1)));
 
             cellElement.addEventListener('click', function () {
-                this.classList.add('bg_lightblue');
-                console.log('Hai cliccato la cella numero: ' + ((i + 1) * (j + 1)));
+
+                console.log('Hai cliccato la cella numero: ' + ((i*10) + (j + 1))); 
+
+                if (bombIndexList.includes(((i*10) + (j + 1)))) {
+                    console.log('Ho colpito la bomba');
+                    this.classList.add('bg_red');
+
+                } else {
+                    console.log('Non ho colpito la bomba');
+                    this.classList.add('bg_lightblue');
+                }
             })
 
             elementDOM.append(cellElement);
@@ -65,19 +75,18 @@ function generateField(elementDOM, row, column) {
  */
 function bombGenerator(nBomb) {
 
-    const bombIndex = [];
+    const bombIndexList = [];
     let randomNumber;
-    // console.log(!bombIndex.includes(randomNumber));
     let i = 0;
+
+
     while (i < nBomb) {
         randomNumber = Math.ceil(Math.random() * 100);
-        if (!bombIndex.includes(randomNumber)) {
-            bombIndex[i] = randomNumber;
+        if (!bombIndexList.includes(randomNumber)) {
+            bombIndexList[i] = randomNumber;
             i++;
         }
     }
 
-    return bombIndex;
+    return bombIndexList;
 }
-
-bombGenerator(16);
